@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alan Gabriell Asinas — Portfolio</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap');
+
+  :root{
+    --pcb: #0F2E22;
+    --pcb-dark: #0A2018;
+    --trace: #C79A3E;
+    --trace-dim: #7A6132;
+    --silk: #EDE7D9;
+    --silk-dim: #B9C4B9;
+    --led: #4FD9B8;
+    --led-warn: #E8A33D;
+    --ink: #0A2018;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background: var(--pcb);
+    color: var(--silk);
+    font-family:'Inter', sans-serif;
+    line-height:1.55;
+    overflow-x:hidden;
+  }
+  .mono{font-family:'IBM Plex Mono', monospace;}
+
+  /* Faint PCB grid + trace texture */
+  body::before{
+    content:"";
+    position:fixed; inset:0;
+    background-image:
+      linear-gradient(rgba(199,154,62,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(199,154,62,0.05) 1px, transparent 1px);
+    background-size: 42px 42px;
+    pointer-events:none;
+    z-index:0;
+  }
+
+  .wrap{max-width: 980px; margin:0 auto; padding: 0 28px; position:relative; z-index:1;}
+
+  /* ---- NAV ---- */
+  nav{
+    position:sticky; top:0; z-index:50;
+    background: rgba(10,32,24,0.92);
+    backdrop-filter: blur(6px);
+    border-bottom:1px solid var(--trace-dim);
+  }
+  nav .wrap{display:flex; justify-content:space-between; align-items:center; height:60px;}
+  nav .logo{font-family:'IBM Plex Mono'; font-weight:700; letter-spacing:0.5px; color:var(--trace); font-size:15px;}
+  nav .logo span{color:var(--silk-dim);}
+  nav ul{list-style:none; display:flex; gap:26px;}
+  nav a{color:var(--silk-dim); text-decoration:none; font-size:13px; font-family:'IBM Plex Mono'; letter-spacing:0.5px; transition: color 0.2s;}
+  nav a:hover{color:var(--led);}
+  @media(max-width:640px){ nav ul{gap:14px;} nav a{font-size:11px;} }
+
+  /* ---- HERO ---- */
+  .hero{padding:90px 0 70px; position:relative;}
+  .hero .ref{
+    font-family:'IBM Plex Mono'; font-size:13px; color:var(--trace);
+    letter-spacing:2px; margin-bottom:18px; display:flex; align-items:center; gap:10px;
+  }
+  .dot{width:8px; height:8px; border-radius:50%; background:var(--led); box-shadow:0 0 8px var(--led); display:inline-block; animation: pulse 2s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;} 50%{opacity:0.35;}}
+
+  .hero h1{
+    font-size: clamp(38px, 6vw, 64px);
+    font-weight:800; line-height:1.05; color:var(--silk);
+    letter-spacing:-1px;
+  }
+  .hero h1 .accent{color:var(--trace);}
+  .hero p.tagline{
+    margin-top:20px; font-size:18px; color:var(--silk-dim); max-width:560px;
+  }
+  .hero .status-row{
+    display:flex; gap:28px; margin-top:36px; flex-wrap:wrap;
+  }
+  .status-chip{
+    font-family:'IBM Plex Mono'; font-size:12px; color:var(--silk-dim);
+    border:1px solid var(--trace-dim); padding:8px 14px; border-radius:3px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .status-chip .dot{width:6px;height:6px;}
+
+  /* Circuit trace divider */
+  .trace-divider{
+    height:60px; position:relative; margin: 10px 0 30px;
+  }
+  .trace-divider svg{width:100%; height:100%; display:block;}
+
+  /* ---- SECTION LABEL (reference designator style) ---- */
+  .sec-label{
+    display:flex; align-items:center; gap:14px; margin-bottom:34px;
+  }
+  .sec-label .desig{
+    font-family:'IBM Plex Mono'; font-weight:700; color:var(--trace);
+    font-size:14px; border:1px solid var(--trace-dim); padding:4px 10px; border-radius:3px;
+  }
+  .sec-label h2{font-size:24px; font-weight:700; color:var(--silk); letter-spacing:0.5px;}
+  .sec-label::after{
+    content:""; flex:1; height:1px; background: var(--trace-dim);
+  }
+
+  section{padding: 64px 0;}
+  section#about{border-top:1px solid var(--trace-dim);}
+  section#skills{border-top:1px solid var(--trace-dim); background: rgba(199,154,62,0.02);}
+  section#experience{border-top:1px solid var(--trace-dim);}
+  section#projects{border-top:1px solid var(--trace-dim); background: rgba(199,154,62,0.02);}
+  section#education{border-top:1px solid var(--trace-dim);}
+  section#contact{border-top:1px solid var(--trace-dim); background: rgba(199,154,62,0.02);}
+
+  .about-text{font-size:16px; color:var(--silk-dim); max-width:680px;}
+  .about-text b{color:var(--silk); font-weight:600;}
+
+  /* ---- SKILLS: component tray ---- */
+  .skill-grid{
+    display:grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr));
+    gap:16px;
+  }
+  .skill-card{
+    border:1px solid var(--trace-dim); border-radius:4px; padding:18px;
+    background: rgba(10,32,24,0.4);
+    position:relative;
+  }
+  .skill-card .tag{
+    font-family:'IBM Plex Mono'; font-size:11px; color:var(--trace); letter-spacing:1px; margin-bottom:8px; display:block;
+  }
+  .skill-card h3{font-size:16px; color:var(--silk); margin-bottom:6px; font-weight:600;}
+  .skill-card p{font-size:13px; color:var(--silk-dim);}
+
+  /* ---- PROJECTS ---- */
+  .project{
+    display:grid; grid-template-columns: 90px 1fr; gap:24px;
+    padding: 26px 0; border-bottom:1px solid rgba(199,154,62,0.15);
+  }
+  .project:last-child{border-bottom:none;}
+  .project .pid{
+    font-family:'IBM Plex Mono'; color:var(--trace-dim); font-size:13px; padding-top:4px;
+  }
+  .project h3{font-size:19px; color:var(--silk); font-weight:700; margin-bottom:6px;}
+  .project .stack{font-family:'IBM Plex Mono'; font-size:11px; color:var(--led); margin-bottom:10px; letter-spacing:0.5px;}
+  .project p{font-size:14.5px; color:var(--silk-dim); max-width:640px;}
+  .project ul{list-style:none; max-width:640px;}
+  .project li{font-size:14.5px; color:var(--silk-dim); padding-left:18px; position:relative; margin-bottom:6px;}
+  .project li::before{content:"›"; position:absolute; left:0; color:var(--led);}
+
+  /* ---- EDUCATION ---- */
+  .edu-card{
+    border:1px solid var(--trace-dim); border-radius:4px; padding:24px; max-width:640px;
+  }
+  .edu-card h3{color:var(--silk); font-size:18px; margin-bottom:4px;}
+  .edu-card .sub{color:var(--trace); font-family:'IBM Plex Mono'; font-size:13px; margin-bottom:14px;}
+  .edu-card ul{list-style:none; margin-top:10px;}
+  .edu-card li{font-size:14px; color:var(--silk-dim); padding-left:18px; position:relative; margin-bottom:8px;}
+  .edu-card li::before{content:"›"; position:absolute; left:0; color:var(--led);}
+
+  /* ---- CONTACT ---- */
+  .contact-box{
+    border:1px solid var(--trace); border-radius:4px; padding:36px;
+    display:flex; flex-wrap:wrap; justify-content:space-between; gap:24px; align-items:center;
+    background: rgba(199,154,62,0.04);
+  }
+  .contact-box h2{font-size:26px; color:var(--silk); margin-bottom:8px;}
+  .contact-box p{color:var(--silk-dim); font-size:14px;}
+  .contact-links{display:flex; flex-direction:column; gap:10px; font-family:'IBM Plex Mono'; font-size:14px;}
+  .contact-links a{color:var(--led); text-decoration:none;}
+  .contact-links a:hover{text-decoration:underline;}
+  .contact-links .lbl{color:var(--silk-dim); font-size:11px; letter-spacing:1px;}
+
+  footer{padding: 30px 0 50px; text-align:center; color:var(--trace-dim); font-family:'IBM Plex Mono'; font-size:12px;}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <div class="logo">AGA<span>/portfolio</span></div>
+    <ul>
+      <li><a href="#about">About</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#education">Education</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="ref"><span class="dot"></span>SYSTEM STATUS — ONLINE</div>
+    <h1>Alan Gabriell <span class="accent">Asinas</span></h1>
+    <p class="tagline">STEM senior high school student who helps repair computers at his family's PC shop, builds and administers Linux servers, and codes small tools and websites for real people — from a NAS and game server at home to a friend group's Minecraft server.</p>
+    <div class="status-row">
+      <div class="status-chip"><span class="dot" style="background:var(--led);box-shadow:0 0 6px var(--led);"></span>Linux Servers</div>
+      <div class="status-chip"><span class="dot" style="background:var(--led);box-shadow:0 0 6px var(--led);"></span>PC Hardware & Repair</div>
+      <div class="status-chip"><span class="dot" style="background:var(--led-warn);box-shadow:0 0 6px var(--led-warn);"></span>Web Development</div>
+    </div>
+  </div>
+  <div class="trace-divider">
+    <svg viewBox="0 0 980 60" preserveAspectRatio="none">
+      <path d="M0,30 L200,30 L220,10 L400,10 L420,30 L700,30 L720,50 L980,50" stroke="#7A6132" stroke-width="1.5" fill="none"/>
+      <circle cx="220" cy="10" r="3" fill="#C79A3E"/>
+      <circle cx="420" cy="30" r="3" fill="#C79A3E"/>
+      <circle cx="720" cy="50" r="3" fill="#C79A3E"/>
+    </svg>
+  </div>
+</header>
+
+<section id="about">
+  <div class="wrap">
+    <div class="sec-label"><span class="desig">U1</span><h2>About</h2></div>
+    <p class="about-text">
+      I'm a <b>Grade 12 STEM</b> student at De La Salle University Senior High School (DLSU Taft), balancing coursework with technical projects I actually enjoy. I assist my dad at <b>Bluebit</b>, his PC repair business, troubleshooting and repairing computers whenever he needs an extra hand. On my own time, I build and administer <b>Linux servers</b>, host a modded <b>Minecraft</b> server for my friend group, and build small web projects and tools for classmates, friends, and family.
+      I'm looking for a <b>part-time role</b> in customer service or technical support where I can put this hands-on experience to work, and I can <b>start anytime</b>.
+    </p>
+  </div>
+</section>
+
+<section id="skills">
+  <div class="wrap">
+    <div class="sec-label"><span class="desig">U2</span><h2>Skills</h2></div>
+    <div class="skill-grid">
+      <div class="skill-card">
+        <span class="tag">// SERVERS</span>
+        <h3>Linux Administration</h3>
+        <p>Ubuntu server setup with CasaOS and Pterodactyl, Docker-based deployments, and network tunneling (playit.gg) for self-hosted services.</p>
+      </div>
+      <div class="skill-card">
+        <span class="tag">// GAME INFRA</span>
+        <h3>Minecraft Server Ops</h3>
+        <p>Vanilla, Paper/Pufferfish, and NeoForge modded servers — including full world & player-data migrations via custom Python scripts.</p>
+      </div>
+      <div class="skill-card">
+        <span class="tag">// HARDWARE</span>
+        <h3>PC Building & Repair</h3>
+        <p>Desktop and laptop diagnostics, component builds, and troubleshooting — sharpened by assisting at my dad's repair shop, Bluebit.</p>
+      </div>
+      <div class="skill-card">
+        <span class="tag">// NETWORK</span>
+        <h3>Troubleshooting & Networking</h3>
+        <p>Router setup, port forwarding, DNS and connectivity issues, malware removal, and device diagnostics.</p>
+      </div>
+      <div class="skill-card">
+        <span class="tag">// WEB</span>
+        <h3>Front-End Development</h3>
+        <p>Responsive single-file sites in HTML, CSS, and JavaScript, with animation and interactivity built in.</p>
+      </div>
+      <div class="skill-card">
+        <span class="tag">// SCRIPTING</span>
+        <h3>Python Automation</h3>
+        <p>Data migration scripting (nbtlib) to rewrite filenames and NBT/UUID fields across server architectures.</p>
+      </div>
+      <div class="skill-card">
+        <span class="tag">// MOBILE</span>
+        <h3>Android Development</h3>
+        <p>Currently building a Kotlin Android app (in progress) for automated call management — applying new mobile dev skills to a real, self-directed project.</p>
+      </div>
+      <div class="skill-card">
+        <span class="tag">// LANGUAGE</span>
+        <h3>Bilingual Communication</h3>
+        <p>Fluent in English and Filipino — patient at explaining technical problems in plain language to customers, classmates, and clients.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="experience">
+  <div class="wrap">
+    <div class="sec-label"><span class="desig">U3</span><h2>Experience</h2></div>
+
+    <div class="project">
+      <div class="pid">ONGOING</div>
+      <div>
+        <h3>Part-Time Assistant Technician</h3>
+        <div class="stack">Bluebit (Bluebit E-Solutions) · Bacoor, Cavite · Family-owned, est. 2011</div>
+        <ul>
+          <li>Assist the owner with diagnosing and repairing desktop and laptop computers whenever extra help is needed.</li>
+          <li>Talk with customers to understand their problems and explain findings and repair options in simple terms.</li>
+          <li>Help with hardware replacement, operating system and software issues, and general maintenance.</li>
+          <li>Built a website for the business and an online presence using its Google Maps listing.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="projects">
+  <div class="wrap">
+    <div class="sec-label"><span class="desig">U4</span><h2>Projects</h2></div>
+
+    <div class="project">
+      <div class="pid">01</div>
+      <div>
+        <h3>NAS & Game Dedicated Server <span style="color:var(--led); font-size:12px; font-family:'IBM Plex Mono';">(recent)</span></h3>
+        <div class="stack">Ubuntu · CasaOS · Pterodactyl</div>
+        <p>Built a home server that serves as both a network storage (NAS) device and a game dedicated server. It runs Ubuntu with CasaOS for file and app management and Pterodactyl for hosting game servers.</p>
+      </div>
+    </div>
+
+    <div class="project">
+      <div class="pid">02</div>
+      <div>
+        <h3>NeoForge Minecraft Server</h3>
+        <div class="stack">Ubuntu · Docker · NeoForge · Python · playit.gg</div>
+        <p>Set up and maintain a modded Minecraft server for my friend group, evolving from vanilla, to Crafty Controller (Docker), to a NeoForge modpack — including a full migration of an existing Paper-based world using a custom Python script to rewrite files and UUID data, and fixing a double-NAT connection problem with tunneling.</p>
+      </div>
+    </div>
+
+    <div class="project">
+      <div class="pid">03</div>
+      <div>
+        <h3>CallEnder — Call Auto-End Android App <span style="color:var(--led-warn); font-size:12px; font-family:'IBM Plex Mono';">(in progress)</span></h3>
+        <div class="stack">Android · Kotlin</div>
+        <p>Currently building an Android app that lets you set a timer to automatically end an in-progress call once the set time is reached. Traced a crash on Android 14 to a missing foreground service setting and fixed it.</p>
+      </div>
+    </div>
+
+    <div class="project">
+      <div class="pid">04</div>
+      <div>
+        <h3>Debut Invitation Website</h3>
+        <div class="stack">HTML · CSS · JS · Animation</div>
+        <p>Built a custom invitation site for a friend's 18th birthday celebration, featuring an envelope-open animation, live countdown timer, and a themed panel-split background.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="education">
+  <div class="wrap">
+    <div class="sec-label"><span class="desig">U5</span><h2>Education</h2></div>
+    <div class="edu-card">
+      <h3>De La Salle University Senior High School (DLSU Taft)</h3>
+      <div class="sub">STEM Strand — Grade 12 (currently enrolled)</div>
+      <ul>
+        <li>Bronze Awardee, Grade 11</li>
+      </ul>
+    </div>
+    <div class="edu-card" style="margin-top:20px;">
+      <h3>Divine Light Academy — Bacoor</h3>
+      <div class="sub">Kinder – Grade 10</div>
+      <ul>
+        <li>Recognition for Computer subject excellence, Grades 8–10</li>
+        <li>Selected for the Grade 10 robotics competition team</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="wrap">
+    <div class="sec-label"><span class="desig">U6</span><h2>Contact</h2></div>
+    <div class="contact-box">
+      <div>
+        <h2>Let's connect</h2>
+        <p>Looking for part-time work in customer service or technical support. Can start anytime.</p>
+      </div>
+      <div class="contact-links">
+        <div><span class="lbl">EMAIL</span><br><a href="mailto:alanasinas@gmail.com">alanasinas@gmail.com</a></div>
+        <div><span class="lbl">PHONE</span><br><a href="tel:+639311246372">09311246372</a></div>
+        <div><span class="lbl">LOCATION</span><br>Imus, Cavite, Philippines</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">&lt;/&gt; built by Alan Gabriell Asinas — Imus, Cavite</div>
+</footer>
+
+</body>
+</html>
